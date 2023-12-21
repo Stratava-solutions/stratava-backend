@@ -9,11 +9,13 @@ const signals = require('./signals');
 const dbContainer = require('./data/infrastructure/db');
 const postsRepositoryContainer = require('./data/repositories/posts');
 const usersRepositoryContainer = require('./data/repositories/users');
+const stratavaRepositoryContainer = require('./data/repositories/stratava');
 const authenticationRepositoryContainer = require('./data/repositories/authenticationRepository');
-const recourceLimiterRepositoryContainer = require('./data/repositories/recourceLimiterRepository');
+// const recourceLimiterRepositoryContainer = require('./data/repositories/recourceLimiterRepository');
 const authServiceContainer = require('./domain/auth/service');
 const postsServiceContainer = require('./domain/posts/service');
 const usersServiceContainer = require('./domain/users/service');
+const contactUsServiceContainer = require('./domain/contactUs/service');
 const appContainer = require('./presentation/http/app');
 const websocketsContainer = require('./presentation/websockets');
 
@@ -21,11 +23,12 @@ const db = dbContainer.init(dbConnectionString);
 const authenticationRepository = authenticationRepositoryContainer.init();
 const postsRepository = postsRepositoryContainer.init(db.schemas);
 const usersRepository = usersRepositoryContainer.init(db.schemas);
-const recourceLimiterRepository = recourceLimiterRepositoryContainer.init();
+const stratavaRepository = stratavaRepositoryContainer.init(db.schemas);
+// const recourceLimiterRepository = recourceLimiterRepositoryContainer.init();
 const authService = authServiceContainer.init({
   authenticationRepository,
   usersRepository,
-  recourceLimiterRepository,
+  // recourceLimiterRepository,
 });
 const postsService = postsServiceContainer.init({
   postsRepository,
@@ -34,10 +37,14 @@ const usersService = usersServiceContainer.init({
   usersRepository,
   postsRepository,
 });
+const stratavaService = contactUsServiceContainer.init({
+  stratavaRepository
+});
 const app = appContainer.init({
   authService,
   postsService,
   usersService,
+  stratavaService,
 });
 websocketsContainer.init(app);
 

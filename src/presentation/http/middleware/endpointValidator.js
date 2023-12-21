@@ -29,6 +29,42 @@ const requireSameUser = () => [
     }),
 ];
 
+const requireValidContactUsBody = () => {
+  return [
+    body('email')
+      .exists()
+      .isEmail()
+      .withMessage({
+        message: 'email not provided. Make sure you have a "email" property in your body params.',
+        status: 400,
+      }),
+    body('mobile')
+      .exists()
+      .withMessage({
+        message: 'mobile not provided. Make sure you have a "mobile" property in your body params.',
+        status: 400,
+      }),
+    body('name')
+      .exists()
+      .withMessage({
+        message: 'name not provided. Make sure you have a "name" property in your body params.',
+        status: 400,
+      }),
+    body('subject')
+      .exists()
+      .withMessage({
+        message: 'subject not provided. Make sure you have a "subject" property in your body params.',
+        status: 400,
+      }),
+    body('message')
+      .exists()
+      .withMessage({
+        message: 'message not provided. Make sure you have a "message" property in your body params.',
+        status: 400,
+      }),
+  ];
+};
+
 const requireValidUserBody = () => {
   let passwordErrorMsg;
   return [
@@ -144,6 +180,11 @@ const validate = (req, res, next) => {
   return errorHandler({ trace: true })(new errors[errStatus](errMsg, 'BAD_BODY_PARAMS'), req, res, next);
 };
 
+const validateContactUsBody = () => [
+  requireValidContactUsBody(),
+  validate,
+];
+
 const validateCreateUserBody = () => [
   requireValidUserBody(),
   validate,
@@ -170,6 +211,7 @@ const validateCreatePostBody = () => [
 ];
 
 module.exports = {
+  validateContactUsBody,
   validateUserToken,
   validateCreateUserBody,
   validateLoginBodyParams,

@@ -11,6 +11,7 @@ const { errorHandler } = require('@dimosbotsaris/express-error-handler');
 const jwt = require('express-jwt');
 const authRoutes = require('./routes/auth/routes');
 const usersRoutes = require('./routes/users/routes');
+const stratavaRoutes = require('./routes/stratava/routes');
 const swaggerDocument = require('../../swagger');
 const {
   jwtSecret,
@@ -23,6 +24,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json({ limit: '5mb' }));
 app.use(compress);
 app.use(logger('dev'));
+// var corsOptions = {
+//   origin: 'https://www.stratava.in',
+//   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+// }
 app.use(cors());
 
 module.exports.init = (services) => {
@@ -36,10 +41,11 @@ module.exports.init = (services) => {
     algorithms: ['HS256'],
   })
     .unless({
-      path: ['/auth/register', '/auth/login'],
+      path: ['/auth/register', '/auth/login', '/stratava/contact'],
     }));
   app.use('/auth', authRoutes.init(services));
   app.use('/users', usersRoutes.init(services));
+  app.use('/stratava', stratavaRoutes.init(services));
   app.use(errorHandler({ trace: true }));
   const httpServer = http.createServer(app);
   return httpServer;
